@@ -1,0 +1,24 @@
+{
+	"name": "__MSG_extName__",
+	"version": "0.4",
+	"manifest_version": 2,
+	"description": "__MSG_extDescription__",
+	"default_locale": "en",
+	"background": {
+		"persistent": false,
+		"scripts": ["UriParser.js","supportedSites.js","utilities.js","background.js"]
+	},
+	"page_action": {
+		"default_icon": {
+			"19": "icon19.png",  
+			"38": "icon38.png"
+		},
+		"default_title": "Clean Copy",
+		"default_popup": "popup.html"
+	},
+	"icons" : {
+		"48" : "icon48.png",
+		"128" : "icon128.png"
+	  },
+	"permissions": ["tabs", "clipboardWrite"]
+}
