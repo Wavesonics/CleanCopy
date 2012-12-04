@@ -23,18 +23,20 @@ function urlIsSupported( url )
 
 function getSupportedSite( url, rootDomain )
 {
-	var sites = null;
+	var site = null;
 
-	for( var i in supportedSites )
+	var siteList = getSupportedSiteList();
+	for( var i in siteList )
 	{
-		var tempSite = supportedSites[i];
+		var tempSite = siteList[i];
+
 		if( tempSite.domain == rootDomain )
 		{
-			sites = tempSite;
+			site = tempSite;
 			break;
 		}
 	}
-	return sites;
+	return site;
 }
 
 function getUrlParts( url, domain, page )
@@ -43,3 +45,19 @@ function getUrlParts( url, domain, page )
 	var match = regExPattern.exec( url );
 	return match;
 }
+
+function putSupportedSiteList( newSiteList )
+{
+	localStorage.supportedSites = JSON.stringify( newSiteList );
+}
+
+function getSupportedSiteList()
+{
+	if( getSupportedSiteList.list === null )
+	{
+		getSupportedSiteList.list = JSON.parse( localStorage.supportedSites );
+	}
+	
+	return getSupportedSiteList.list;
+}
+getSupportedSiteList.list = null;

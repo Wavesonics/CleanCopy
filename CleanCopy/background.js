@@ -8,3 +8,19 @@ function checkForValidUrl(tabId, changeInfo, tab)
 
 // Listen for any changes to the URL of any tab.
 chrome.tabs.onUpdated.addListener(checkForValidUrl);
+
+
+function firstRun(details)
+{
+	if( details.reason == "install" )
+	{
+		putSupportedSiteList( supportedSites );
+	}
+	else
+	{
+		// Should merge old list with new defaults here
+	}	
+};
+
+// Perform first time setup
+chrome.runtime.onInstalled.addListener( firstRun );
