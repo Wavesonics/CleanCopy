@@ -1,13 +1,13 @@
 {
 	"name": "__MSG_extName__",
-	"version": "0.4",
+	"version": "0.5",
 	"manifest_version": 2,
 	"description": "__MSG_extDescription__",
 	"default_locale": "en",
 	"options_page": "options.html",
 	"background": {
 		"persistent": false,
-		"scripts": ["UriParser.js","supportedSites.js","utilities.js","background.js"]
+		"scripts": ["supportedSites.js","utilities.js","background.js"]
 	},
 	"page_action": {
 		"default_icon": {

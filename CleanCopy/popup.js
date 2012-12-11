@@ -8,19 +8,21 @@ function cleanCopy() {
 		var tab = array_of_Tabs[0];
 		var url = tab.url;
 
-		var rootDomain = UriParser.parseRootDomain( url );
-		var site = getSupportedSite( url, rootDomain );
-		
+		var site = getSupportedSite( url );
 		if( site != null )
 		{
 			for( var i in site.pages )
 			{
 				var page = site.pages[i];
-				var parts = getUrlParts( url, rootDomain, page );
+				var parts = getUrlParts( url, page );
 
 				if( parts != null && parts.length == page.captureGroups + 1 )
 				{
-					var cleanUrl = page.urlTemplate.replace( "URL_ID_1_HERE", parts[1] );
+					var cleanUrl = page.urlTemplate;
+					for( var ii=0; ii<page.captureGroups; ++ii )
+					{
+						cleanUrl = cleanUrl.replace( "URL_ID_"+ii+"_HERE", parts[ii+1] );
+					}
 					copyToClipboard( cleanUrl );
 					break;
 				}

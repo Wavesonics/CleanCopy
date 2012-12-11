@@ -2,14 +2,14 @@ function urlIsSupported( url )
 {
 	var isValid = false;
 
-	var rootDomain = UriParser.parseRootDomain( url );
-	var site = getSupportedSite( url, rootDomain );
+	var site = getSupportedSite( url );
 	if( site != null )
 	{
 		for( var i in site.pages )
 		{
 			var page = site.pages[i];
-			var parts = getUrlParts( url, rootDomain, page );
+			var parts = getUrlParts( url, page );
+
 			if( parts != null && parts.length == page.captureGroups + 1 )
 			{
 				isValid = true;
@@ -21,7 +21,7 @@ function urlIsSupported( url )
 	return isValid;
 }
 
-function getSupportedSite( url, rootDomain )
+function getSupportedSite( url )
 {
 	var site = null;
 
@@ -30,7 +30,7 @@ function getSupportedSite( url, rootDomain )
 	{
 		var tempSite = siteList[i];
 
-		if( tempSite.domain == rootDomain )
+		if( checkDomain( tempSite, url ) )
 		{
 			site = tempSite;
 			break;
@@ -39,15 +39,28 @@ function getSupportedSite( url, rootDomain )
 	return site;
 }
 
-function getUrlParts( url, domain, page )
+function checkDomain( site, url )
 {
-	var regExPattern = new RegExp( page.capturePattern, "i" );
-	var match = regExPattern.exec( url );
-	return match;
+	var domainRegEx = new RegExp( "^(?:http|https):\/\/(?:www.)?" + site.domain + ".*$", "i" )
+	return domainRegEx.test( url );
+}
+ 
+function getUrlParts( url, page )
+{
+	return page.capturePattern.exec( url );
 }
 
 function putSupportedSiteList( newSiteList )
 {
+	for( var ii in newSiteList )
+	{
+		var pages = newSiteList[ii].pages;
+		for( var xx in pages )
+		{
+			pages[xx].capturePattern = pages[xx].capturePattern.source;
+		}
+	}
+	
 	localStorage.supportedSites = JSON.stringify( newSiteList );
 }
 
@@ -56,6 +69,15 @@ function getSupportedSiteList()
 	if( getSupportedSiteList.list === null )
 	{
 		getSupportedSiteList.list = JSON.parse( localStorage.supportedSites );
+		
+		for( var ii in getSupportedSiteList.list )
+		{
+			var pages = getSupportedSiteList.list[ii].pages;
+			for( var xx in pages )
+			{
+				pages[xx].capturePattern = new RegExp( pages[xx].capturePattern );
+			}
+		}
 	}
 	
 	return getSupportedSiteList.list;

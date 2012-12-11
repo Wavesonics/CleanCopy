@@ -12,14 +12,7 @@ chrome.tabs.onUpdated.addListener(checkForValidUrl);
 
 function firstRun(details)
 {
-	if( details.reason == "install" )
-	{
-		putSupportedSiteList( supportedSites );
-	}
-	else
-	{
-		// Should merge old list with new defaults here
-	}	
+	putSupportedSiteList( supportedSites );
 };
 
 // Perform first time setup
