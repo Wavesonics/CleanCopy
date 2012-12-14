@@ -41,8 +41,7 @@ function getSupportedSite( url )
 
 function checkDomain( site, url )
 {
-	var domainRegEx = new RegExp( "^(?:http|https):\/\/(?:www.)?" + site.domain + ".*$", "i" )
-	return domainRegEx.test( url );
+	return site.domainRegex.test( url );
 }
  
 function getUrlParts( url, page )
@@ -72,7 +71,10 @@ function getSupportedSiteList()
 		
 		for( var ii in getSupportedSiteList.list )
 		{
-			var pages = getSupportedSiteList.list[ii].pages;
+			var site = getSupportedSiteList.list[ii];
+			site.domainRegex = new RegExp( "^(?:http|https):\/\/(?:www.)?" + site.domain + ".*$", "i" );
+			
+			var pages = site.pages;
 			for( var xx in pages )
 			{
 				pages[xx].capturePattern = new RegExp( pages[xx].capturePattern );

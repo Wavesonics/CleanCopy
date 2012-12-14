@@ -2,32 +2,49 @@ function populateSiteList()
 {
 	var siteList = getSupportedSiteList();
 
-	var siteListContainer = window.document.getElementById( "siteListContainer" );
+	var siteListContainer = $("#siteListContainer");
 
 	for( var ii in siteList )
 	{
 		var site = siteList[ii];
-		var siteContainer = window.document.createElement( "div" );
-		var strongText = window.document.createElement( "strong" );
-		var siteName = window.document.createTextNode( site.domain );
-		strongText.appendChild( siteName );
-		siteContainer.appendChild( strongText );
+		var siteContainer = createSiteContainer( site.domain, ii, siteListContainer );
 
-		var pageList = window.document.createElement( "ul" );
+		var pageList = jQuery( "<ul/>" );
 		
 		for( var xx in site.pages )
 		{
 			var page = site.pages[xx];
-			var pagePattern = window.document.createTextNode( page.capturePattern.source );
-			var pageItem = window.document.createElement( "li" );
-			pageItem.appendChild( pagePattern );
-			pageList.appendChild( pageItem );
+			var elementId = "site_"+ii+"_page_"+xx;
+			
+			//var pageItem = jQuery( "<li/>", { id: elementId, click:patternClicked } );
+			var pageItem = jQuery( "<li/>", { id: elementId } );
+			pageItem.html( page.capturePattern.source );
+			pageItem.appendTo( pageList );
 		}
-		siteContainer.appendChild( pageList );
-		
-		siteListContainer.appendChild( siteContainer );
-		siteListContainer.appendChild( window.document.createElement( "br" ) );
+		pageList.appendTo( siteContainer );
+
+		siteContainer.appendTo( siteListContainer );
 	}
 }
 
-window.onload = populateSiteList;
+function patternClicked()
+{
+	alert( $(this).attr('id') );
+}
+
+function createSiteContainer( siteName, siteIndex, siteListContainer )
+{
+	var siteContainer = jQuery('<div/>', { id: 'site_'+siteIndex });
+	var siteNameElement = jQuery('<strong/>');
+	siteNameElement.html( siteName );
+	siteNameElement.appendTo( siteContainer );
+	
+	siteContainer.appendTo( siteListContainer );
+	
+	return siteContainer;
+}
+
+$(document).ready(function()
+{
+	populateSiteList();
+});

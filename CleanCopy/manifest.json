@@ -1,10 +1,11 @@
 {
 	"name": "__MSG_extName__",
-	"version": "0.5",
+	"version": "0.6",
 	"manifest_version": 2,
 	"description": "__MSG_extDescription__",
 	"default_locale": "en",
 	"options_page": "options.html",
+	"incognito": "spanning",
 	"background": {
 		"persistent": false,
 		"scripts": ["supportedSites.js","utilities.js","background.js"]
@@ -21,5 +22,5 @@
 		"48" : "icon48.png",
 		"128" : "icon128.png"
 	  },
-	"permissions": ["tabs", "clipboardWrite"]
+	"permissions": ["tabs", "clipboardWrite", "storage"]
 }
