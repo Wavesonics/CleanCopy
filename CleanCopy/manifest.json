@@ -12,15 +12,15 @@
 	},
 	"page_action": {
 		"default_icon": {
-			"19": "icon19.png",  
-			"38": "icon38.png"
+			"19": "images/icon19.png",
+			"38": "images/icon38.png"
 		},
 		"default_title": "Clean Copy",
 		"default_popup": "popup.html"
 	},
 	"icons" : {
-		"48" : "icon48.png",
-		"128" : "icon128.png"
+		"48" : "images/icon48.png",
+		"128" : "images/icon128.png"
 	  },
 	"permissions": ["tabs", "clipboardWrite", "storage"]
 }
