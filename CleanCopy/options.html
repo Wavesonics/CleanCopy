@@ -28,20 +28,42 @@
 
 		#siteListContainer
 		{
+            padding: 10px;
+            background: lightgray;
+		}
 
+        #siteListContainer ul
+    	{
+            padding: 5px;
+            background: darkgray;
+            list-style-type: none;
+		}
+
+        #siteListContainer li
+        {
+            margin: 5px;
+            background: lightyellow;
 		}
     </style>
 
     <!-- JavaScript and HTML must be in separate files for security. -->
 	<script src="jquery-1.8.3.min.js"></script>
+	<script src="supportedSites.js"></script>
 	<script src="utilities.js"></script>
     <script src="options.js"></script>
   </head>
   <body>
 		<h1><img src="images/icon128.png"></img><span>Clean Copy Settings</span></h1>
 	<br />
+	<button id="reset_btn" type="button">Reset to defaults</button>
+	<br />
 	<div id="siteListContainer">
-
+	</div>
+	<br />
+	
+	<div id="new_site_controls">
+		Domain Pattern: <input type="text" id="site_domain">
+		<button id="add_site_btn" type="button">Add Site</button>
 	</div>
   </body>
 </html>

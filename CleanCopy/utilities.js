@@ -61,6 +61,7 @@ function putSupportedSiteList( newSiteList )
 	}
 	
 	localStorage.supportedSites = JSON.stringify( newSiteList );
+	getSupportedSiteList.list = null;
 }
 
 function getSupportedSiteList()
