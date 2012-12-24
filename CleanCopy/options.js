@@ -1,5 +1,18 @@
 var siteList = null;
 
+function getSite( siteIndex )
+{
+	return siteList[ siteIndex ];
+}
+
+function getPage( siteIndex, pageIndex )
+{
+	var site = getSite( siteIndex );
+	var page = site.pages[pageIndex];
+	
+	return page;
+}
+
 function repopulateSiteList()
 {
 	$("#siteListContainer").html( "" );
@@ -31,14 +44,12 @@ function populateSiteList()
 
 function getSiteId( siteIndex )
 {
-	return "page_" + siteIndex;
-	//return 'site_'+siteList[siteIndex].domain.hashCode();
+	return "site_" + siteIndex;
 }
 
 function getPageId( siteIndex, pageIndex )
 {
-	return "site_" + siteIndex + "_page_" + pageIndex;
-	//return "site_"+siteList[siteIndex].domain.hashCode()+"_page_"+siteList[siteIndex].pages[pageIndex].capturePattern.source.hashCode();
+	return getSiteId( + siteIndex ) + "_page_" + pageIndex;
 }
 
 function deleteSite( siteIndex )
@@ -72,21 +83,25 @@ function deletePage( siteIndex, pageIndex )
 
 function createPage( siteIndex, pageIndex, pageList )
 {
-	var site = siteList[siteIndex];
-	var page = site.pages[pageIndex];
+	var page = getPage( siteIndex, pageIndex );
 	var elementId = getPageId( siteIndex, pageIndex );
 
-	var pageItem = jQuery( "<li/>", { id: elementId, click:function(){ deletePage( siteIndex, pageIndex ) } } );
+	var pageItem = jQuery( "<li/>", { id: elementId, click:function(){ togglePageDetails( siteIndex, pageIndex ) } } );
 	pageItem.html( page.capturePattern.source );
 	pageItem.appendTo( pageList );
 }
 
 function createSiteContainer( siteName, siteIndex, siteListContainer )
 {
-	var siteContainer = jQuery('<div/>', { id: getSiteId( siteIndex ) });
+	var site = getSite( siteIndex );
+
+	var siteContainer = jQuery( "<div/>", { id: getSiteId( siteIndex ) });
 	
-	var deleteSiteButton = jQuery( "<button/>", { html:"X", click: function(){ deleteSite( siteIndex ) } } );
-	deleteSiteButton.appendTo( siteContainer );
+	if( site.isDefault === false )
+	{
+		var deleteSiteButton = jQuery( "<button/>", { html:"X", class:"deleteButton", click: function(){ deleteSite( siteIndex ) } } );
+		deleteSiteButton.appendTo( siteContainer );
+	}
 	
 	var siteNameElement = jQuery('<strong/>');
 	siteNameElement.html( siteName );
@@ -94,14 +109,59 @@ function createSiteContainer( siteName, siteIndex, siteListContainer )
 	
 	var pageList = jQuery( "<ul/>", { class:"page_container" } );
 	
-	var deleteSiteButton = jQuery( "<button/>", { html:"Edit", click: function(){ toggleNewPageControls( siteIndex ) } } );
-	deleteSiteButton.appendTo( pageList );
+	var editSiteButton = jQuery( "<button/>", { html:"Add Page", click: function(){ toggleNewPageControls( siteIndex ) } } );
+	editSiteButton.appendTo( pageList );
 	
 	pageList.appendTo( siteContainer );
 	
 	siteContainer.appendTo( siteListContainer );
 
 	return siteContainer;
+}
+
+function togglePageDetails( siteIndex, pageIndex )
+{
+	var pageId = getPageId( siteIndex, pageIndex );
+	var pageContainer = $( "#"+pageId );
+	var pageDetails = pageContainer.children( ".page_details_container" );
+	
+	if( pageDetails.length == 0 )
+	{
+		createPageDetails( siteIndex, pageIndex );
+	}
+	else
+	{
+		pageDetails.slideUp( "fast", function(){ pageDetails.remove(); } );
+	}
+}
+
+function createPageDetails( siteIndex, pageIndex )
+{
+	var page = getPage( siteIndex, pageIndex );
+	
+	var pageId = getPageId( siteIndex, pageIndex );
+	var pageContainer = $( "#"+pageId );
+	
+	var pageDetailsContainer = jQuery( "<div/>", {class:"page_details_container"} );
+	
+	var captureGroupsContainer = jQuery( "<div/>" );
+	jQuery( "<strong/>", { html:"Capture Groups: " } ).appendTo( captureGroupsContainer );
+	jQuery( "<span/>", { html:page.captureGroups+"", class:"capture_groups" } ).appendTo( captureGroupsContainer );
+	captureGroupsContainer.appendTo( pageDetailsContainer );
+	
+	var urlTamplateContainer = jQuery( "<div/>" );
+	jQuery( "<strong/>", { html:"Template: " } ).appendTo( urlTamplateContainer );
+	jQuery( "<span/>", { html:page.urlTemplate+"", class:"url_template" } ).appendTo( urlTamplateContainer );
+	urlTamplateContainer.appendTo( pageDetailsContainer );
+	
+	if( page.isDefault === false )
+	{
+		var deletePageButton = jQuery( "<button/>", { html:"Delete Page", class:"deleteButton", click: function(){ deletePage( siteIndex, pageIndex ) } } );
+		deletePageButton.appendTo( pageDetailsContainer );
+	}
+	
+	pageDetailsContainer.hide();
+	pageDetailsContainer.appendTo( pageContainer ).slideDown( "fast" );
 }
 
 function toggleNewPageControls( siteIndex )
@@ -115,7 +175,7 @@ function toggleNewPageControls( siteIndex )
 	}
 	else
 	{
-		newPageControls.remove();
+		newPageControls.slideUp( "fast", function(){ newPageControls.remove(); } );
 	}
 }
 
@@ -123,21 +183,30 @@ function createNewPageControls( siteIndex )
 {
 	var controlsContainer = jQuery( "<div/>", { class:"page_controls_container" } );
 	
+	jQuery( "<strong/>", { html:"Pattern: " } ).appendTo( controlsContainer );
 	var createPagePatternText = jQuery( "<input/>", {type:"text", class:"page_pattern"} );
+	createPagePatternText.attr( "size", 128 );
 	createPagePatternText.appendTo( controlsContainer );
+	jQuery( "<br/>" ).appendTo( controlsContainer );
 	
+	jQuery( "<strong/>", { html:"Number of Capture Groups: " } ).appendTo( controlsContainer );
 	var createPageCaptureGroupsText = jQuery( "<input/>", {type:"text", class:"page_capture_groups"} );
+	createPageCaptureGroupsText.attr( "size", 1 );
 	createPageCaptureGroupsText.appendTo( controlsContainer );
 	jQuery( "<br/>" ).appendTo( controlsContainer );
 	
+	jQuery( "<strong/>", { html:"URL Template: " } ).appendTo( controlsContainer );
 	var createPageCaptureGroupsText = jQuery( "<input/>", {type:"text", class:"page_template"} );
+	createPageCaptureGroupsText.attr( "size", 96 );
 	createPageCaptureGroupsText.appendTo( controlsContainer );
+	jQuery( "<br/>" ).appendTo( controlsContainer );
 	
-	var createPageBtn = jQuery( "<button/>", { html:"Add Page", click: function(){ createNewPage( siteIndex ) } } );
+	var createPageBtn = jQuery( "<button/>", { html:"Create New Page", class:"createButton", click: function(){ createNewPage( siteIndex ) } } );
 	createPageBtn.appendTo( controlsContainer );
 	
 	var pageList = $( "#"+getSiteId( siteIndex ) ).find( ".page_container" );
-	controlsContainer.appendTo( pageList );
+	controlsContainer.hide();
+	controlsContainer.appendTo( pageList ).slideDown( "fast" );
 }
 
 function createNewPage( siteIndex )
@@ -156,6 +225,7 @@ function createNewPage( siteIndex )
 	newPage.captureGroups = parseInt( pageCaptureGroups.val() );
 	newPage.capturePattern = new RegExp( pagePattern.val() );
 	newPage.urlTemplate = pageTemplate.val();
+	newPage.isDefault = false;
 	
 	// Save and redraw
 	siteList[ siteIndex ].pages.push( newPage );
@@ -171,15 +241,20 @@ function createNewSite()
 	newSite.domain = domain;
 	newSite.pages = new Array();
 	siteList.push( newSite );
+	newSite.isDefault = false;
 	putSupportedSiteList( siteList );
 	
-	var newSiteContainer = createSiteContainer( domain, siteList.length, $("#siteListContainer") );
+	repopulateSiteList();
 }
 
 function resetSiteList()
 {
-	putSupportedSiteList( supportedSites );
-	repopulateSiteList();
+	var confirmed = confirm( "This will remove all custom sites! Are you sure you want to do this?" );
+	if( confirmed === true )
+	{
+		putSupportedSiteList( supportedSites );
+		repopulateSiteList();
+	}
 }
 
 $(document).ready(function()

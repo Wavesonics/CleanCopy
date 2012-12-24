@@ -1,0 +1,96 @@
+body
+{
+	font-family:"Arial";
+}
+
+h1
+{
+  overflow: auto;
+}
+
+h1 span
+{
+
+   float: left;
+   margin-top: 10px;
+   margin-left: 10px;
+}
+
+h1 img
+{
+   float: left;
+}
+
+div
+{
+	border-radius: 15px;
+}
+
+ul
+{
+	border-radius: 10px;
+}
+
+li
+{
+	border-radius: 5px;
+	padding: 5px;
+}
+
+button
+{
+	border-radius: 5px;
+	padding: 5px;
+	font-weight: bold;
+	background: lightblue;
+}
+
+.deleteButton
+{
+	background: red;
+	color: white;
+}
+
+.createButton
+{
+	background: green;
+	color: white;
+}
+
+#reset_btn
+{
+	float: right;
+	margin-right: 20px;
+}
+
+#new_site_controls
+{
+	padding: 10px;
+	background: lightgreen;
+}
+
+#siteListContainer
+{
+	padding: 10px;
+	background: lightgray;
+}
+
+#siteListContainer ul
+{
+	padding: 5px;
+	background: darkgray;
+	list-style-type: none;
+}
+
+#siteListContainer li
+{
+	margin: 5px;
+	background: lightyellow;
+}
+
+.page_controls_container
+{
+	background: white;
+	border-radius: 5px;
+	padding: 5px;
+}

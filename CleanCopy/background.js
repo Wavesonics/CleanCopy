@@ -18,7 +18,8 @@ function firstRun(details)
 	}
 	else if( details.reason  == "update" )
 	{
-		// Must merge the lists here
+		// Must merge the lists
+		
 	}
 };
 

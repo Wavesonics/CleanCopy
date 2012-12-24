@@ -2,49 +2,7 @@
 <html>
   <head>
     <title>Clean Copy Settings</title>
-    <style>
-		body
-		{
-			font-family:"Arial";
-		}
-
-		h1
-		{
-		  overflow: auto;
-		}
-
-		h1 span
-		{
-
-		   float: left;
-		   margin-top: 10px;
-		   margin-left: 10px;
-		}
-
-		h1 img
-		{
-		   float: left;
-		}
-
-		#siteListContainer
-		{
-            padding: 10px;
-            background: lightgray;
-		}
-
-        #siteListContainer ul
-    	{
-            padding: 5px;
-            background: darkgray;
-            list-style-type: none;
-		}
-
-        #siteListContainer li
-        {
-            margin: 5px;
-            background: lightyellow;
-		}
-    </style>
+	<link rel="stylesheet" type="text/css" href="options.css">
 
     <!-- JavaScript and HTML must be in separate files for security. -->
 	<script src="jquery-1.8.3.min.js"></script>
@@ -55,15 +13,16 @@
   <body>
 		<h1><img src="images/icon128.png"></img><span>Clean Copy Settings</span></h1>
 	<br />
-	<button id="reset_btn" type="button">Reset to defaults</button>
+	<button id="reset_btn" class="deleteButton" type="button">Reset to defaults</button>
 	<br />
 	<div id="siteListContainer">
 	</div>
 	<br />
 	
 	<div id="new_site_controls">
-		Domain Pattern: <input type="text" id="site_domain">
-		<button id="add_site_btn" type="button">Add Site</button>
+		<h2>Add a new Site:</h2>
+		<strong>Domain Pattern:</strong> <input type="text" id="site_domain" size="96">
+		<button id="add_site_btn" type="button" class="createButton">Add Site</button>
 	</div>
   </body>
 </html>
