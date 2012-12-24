@@ -236,6 +236,7 @@ function createNewPage( siteIndex )
 function createNewSite()
 {
     var domain = $("#site_domain").val();
+	$("#site_domain").val( "" );
 	
 	var newSite = new Object();
 	newSite.domain = domain;
