@@ -86,8 +86,10 @@ function createPage( siteIndex, pageIndex, pageList )
 	var page = getPage( siteIndex, pageIndex );
 	var elementId = getPageId( siteIndex, pageIndex );
 
-	var pageItem = jQuery( "<li/>", { id: elementId, click:function(){ togglePageDetails( siteIndex, pageIndex ) } } );
-	pageItem.html( page.capturePattern.source );
+	var pageItem = jQuery( "<li/>", { id: elementId } );
+	var patternAnchor = jQuery( "<a />", {click:function(){ togglePageDetails( siteIndex, pageIndex ) }} );
+	patternAnchor.html( page.capturePattern.source );
+	patternAnchor.appendTo( pageItem );
 	pageItem.appendTo( pageList );
 }
 
@@ -196,9 +198,9 @@ function createNewPageControls( siteIndex )
 	jQuery( "<br/>" ).appendTo( controlsContainer );
 	
 	jQuery( "<strong/>", { html:"URL Template: " } ).appendTo( controlsContainer );
-	var createPageCaptureGroupsText = jQuery( "<input/>", {type:"text", class:"page_template"} );
-	createPageCaptureGroupsText.attr( "size", 96 );
-	createPageCaptureGroupsText.appendTo( controlsContainer );
+	var createPageTemplateText = jQuery( "<input/>", {type:"text", class:"page_template"} );
+	createPageTemplateText.attr( "size", 96 );
+	createPageTemplateText.appendTo( controlsContainer );
 	jQuery( "<br/>" ).appendTo( controlsContainer );
 	
 	var createPageBtn = jQuery( "<button/>", { html:"Create New Page", class:"createButton", click: function(){ createNewPage( siteIndex ) } } );
@@ -222,13 +224,15 @@ function createNewPage( siteIndex )
 	
 	// Create the new page object from the input
 	var newPage = new Object();
-	newPage.captureGroups = parseInt( pageCaptureGroups.val() );
 	newPage.capturePattern = new RegExp( pagePattern.val() );
+	newPage.captureGroups = parseInt( pageCaptureGroups.val() );
 	newPage.urlTemplate = pageTemplate.val();
 	newPage.isDefault = false;
 	
 	// Save and redraw
-	siteList[ siteIndex ].pages.push( newPage );
+	var site = siteList[ siteIndex ];
+	addPageToSite( newPage, site );
+	
 	putSupportedSiteList( siteList );
 	repopulateSiteList();
 }
@@ -241,8 +245,9 @@ function createNewSite()
 	var newSite = new Object();
 	newSite.domain = domain;
 	newSite.pages = new Array();
-	siteList.push( newSite );
 	newSite.isDefault = false;
+	
+	siteList.push( newSite );
 	putSupportedSiteList( siteList );
 	
 	repopulateSiteList();

@@ -37,6 +37,11 @@ li
 	padding: 5px;
 }
 
+li a:hover
+{
+	color: blue;
+}
+
 button
 {
 	border-radius: 5px;
