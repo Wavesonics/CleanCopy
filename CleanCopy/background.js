@@ -1,4 +1,4 @@
-function checkForValidUrl(tabId, changeInfo, tab)
+﻿function checkForValidUrl(tabId, changeInfo, tab)
 {
 	if( urlIsSupported( tab.url ) === true )
 	{

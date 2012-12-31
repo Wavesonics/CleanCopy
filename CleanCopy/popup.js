@@ -1,4 +1,4 @@
-function cleanCopy() {
+﻿function cleanCopy() {
 	chrome.tabs.query({
 		active: true,                              // Select active tabs
 		windowId: chrome.windows.WINDOW_ID_CURRENT // In the current window

@@ -1,4 +1,4 @@
-var siteList = null;
+﻿var siteList = null;
 
 function getSite( siteIndex )
 {

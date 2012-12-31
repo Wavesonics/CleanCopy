@@ -1,4 +1,4 @@
-function urlIsSupported( url )
+﻿function urlIsSupported( url )
 {
 	var isValid = false;
 
@@ -80,8 +80,6 @@ function addPageToSite( page, site )
     }
 }
 
-const KEY_SUPPORTED_SITES = "supportedSites";
-
 function putSupportedSiteList( newSiteList )
 {
 	var tempSiteList = clone( newSiteList );
@@ -96,11 +94,11 @@ function putSupportedSiteList( newSiteList )
 		}
 	}
 
-	chrome.storage.sync.set( {KEY_SUPPORTED_SITES : tempSiteList}, function()
+	chrome.storage.sync.set( {"supportedSites" : tempSiteList}, function()
 	{
 		if( saveDataErrorCheck() )
 		{
-			chrome.storage.sync.getBytesInUse(KEY_SUPPORTED_SITES, function( bytes ){ console.log( "Bytes in use: " + bytes ); });
+			chrome.storage.sync.getBytesInUse("supportedSites", function( bytes ){ console.log( "Bytes in use: " + bytes ); });
 			
 			getSupportedSiteList.list = null;
 			// Let the background page know the site list has been updated
@@ -125,7 +123,7 @@ function getSupportedSiteList( callback )
 {
 	if( getSupportedSiteList.list === null )
 	{
-		chrome.storage.sync.get( KEY_SUPPORTED_SITES, function( data )
+		chrome.storage.sync.get( "supportedSites", function( data )
 		{
 			if( chrome.runtime.lastError === undefined )
 			{

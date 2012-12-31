@@ -1,4 +1,4 @@
-const supportedSites = [
+﻿const supportedSites = [
 	{
 		domain : "youtube.com",
 		pages :
