@@ -21,25 +21,27 @@ function repopulateSiteList()
 
 function populateSiteList()
 {
-	siteList = getSupportedSiteList();
-
-	var siteListContainer = $("#siteListContainer");
-
-	for( var ii in siteList )
+	getSupportedSiteList( function( newSiteList )
 	{
-		var site = siteList[ii];
-		var siteContainer = createSiteContainer( site.domain, ii, siteListContainer );
+		siteList = newSiteList;
+		var siteListContainer = $("#siteListContainer");
 
-		var pageList = siteContainer.find( ".page_container" );
-
-		for( var xx in site.pages )
+		for( var ii in siteList )
 		{
-			createPage( ii, xx, pageList );
-		}
-		pageList.appendTo( siteContainer );
+			var site = siteList[ii];
+			var siteContainer = createSiteContainer( site.domain, ii, siteListContainer );
 
-		siteContainer.appendTo( siteListContainer );
-	}
+			var pageList = siteContainer.find( ".page_container" );
+
+			for( var xx in site.pages )
+			{
+				createPage( ii, xx, pageList );
+			}
+			pageList.appendTo( siteContainer );
+
+			siteContainer.appendTo( siteListContainer );
+		}
+	} );
 }
 
 function getSiteId( siteIndex )

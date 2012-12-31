@@ -2,32 +2,35 @@ function cleanCopy() {
 	chrome.tabs.query({
 		active: true,                              // Select active tabs
 		windowId: chrome.windows.WINDOW_ID_CURRENT // In the current window
-	}, function (array_of_Tabs) {
+	}, function (tabs) {
 		// Since there can only be one active tab in one active window, 
 		//  the array has only one element
-		var tab = array_of_Tabs[0];
+		var tab = tabs[0];
 		var url = tab.url;
 
-		var site = getSupportedSite( url );
-		if( site != null )
+		getSupportedSiteList( function( siteList )
 		{
-			for( var i in site.pages )
+			var site = getSupportedSite( url, siteList );
+			if( site != null )
 			{
-				var page = site.pages[i];
-				var parts = getUrlParts( url, page );
-
-				if( parts != null && parts.length == page.captureGroups + 1 )
+				for( var i in site.pages )
 				{
-					var cleanUrl = page.urlTemplate;
-					for( var ii=0; ii<page.captureGroups; ++ii )
+					var page = site.pages[i];
+					var parts = getUrlParts( url, page );
+
+					if( parts != null && parts.length == page.captureGroups + 1 )
 					{
-						cleanUrl = cleanUrl.replace( "URL_ID_"+ii+"_HERE", parts[ii+1] );
+						var cleanUrl = page.urlTemplate;
+						for( var ii=0; ii<page.captureGroups; ++ii )
+						{
+							cleanUrl = cleanUrl.replace( "URL_ID_"+ii+"_HERE", parts[ii+1] );
+						}
+						copyToClipboard( cleanUrl );
+						break;
 					}
-					copyToClipboard( cleanUrl );
-					break;
 				}
 			}
-		}
+		});
 	});
 }
 

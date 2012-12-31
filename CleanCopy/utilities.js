@@ -17,25 +17,33 @@ function urlIsSupported( url )
 			}
 		}
 	}
-
+	
 	return isValid;
 }
 
-function getSupportedSite( url )
+function getSupportedSite( url, siteList )
 {
-	var site = null;
-
-	var siteList = getSupportedSiteList();
-	for( var i in siteList )
+	if( siteList === undefined )
 	{
-		var tempSite = siteList[i];
+		siteList = getSupportedSiteList.list;
+	}
 
-		if( checkDomain( tempSite, url ) )
+	var site = null;
+	if( siteList != null )
+	{
+		
+		for( var i in siteList )
 		{
-			site = tempSite;
-			break;
+			var tempSite = siteList[i];
+
+			if( checkDomain( tempSite, url ) )
+			{
+				site = tempSite;
+				break;
+			}
 		}
 	}
+	
 	return site;
 }
 
@@ -72,12 +80,15 @@ function addPageToSite( page, site )
     }
 }
 
+const KEY_SUPPORTED_SITES = "supportedSites";
+
 function putSupportedSiteList( newSiteList )
 {
 	var tempSiteList = clone( newSiteList );
 
 	for( var ii in tempSiteList )
 	{
+		delete tempSiteList.domainRegex;
 		var pages = tempSiteList[ii].pages;
 		for( var xx in pages )
 		{
@@ -85,39 +96,68 @@ function putSupportedSiteList( newSiteList )
 		}
 	}
 
-	localStorage.supportedSites = JSON.stringify( tempSiteList );
-	getSupportedSiteList.list = null;
-	
-	// Let the background page know the site list has been updated
-	chrome.extension.sendMessage( {siteListUpdated: true} );
+	chrome.storage.sync.set( {KEY_SUPPORTED_SITES : tempSiteList}, function()
+	{
+		if( saveDataErrorCheck() )
+		{
+			chrome.storage.sync.getBytesInUse(KEY_SUPPORTED_SITES, function( bytes ){ console.log( "Bytes in use: " + bytes ); });
+			
+			getSupportedSiteList.list = null;
+			// Let the background page know the site list has been updated
+			chrome.extension.sendMessage( {siteListUpdated: true} );
+		}
+	} );
 }
 
-function getSupportedSiteList()
+function saveDataErrorCheck()
+{
+	var success = true;
+	if( chrome.runtime.lastError !== undefined  )
+	{
+		success = false;
+		console.log( chrome.runtime.lastError );
+		alert( chrome.runtime.lastError.message );
+	}
+	return success;
+}
+
+function getSupportedSiteList( callback )
 {
 	if( getSupportedSiteList.list === null )
 	{
-		getSupportedSiteList.list = JSON.parse( localStorage.supportedSites );
-
-		for( var ii in getSupportedSiteList.list )
+		chrome.storage.sync.get( KEY_SUPPORTED_SITES, function( data )
 		{
-			var site = getSupportedSiteList.list[ii];
-			site.domainRegex = new RegExp( "^(?:http|https):\/\/(?:www.)?" + site.domain + ".*$", "i" );
-
-			var pages = site.pages;
-			for( var xx in pages )
+			if( chrome.runtime.lastError === undefined )
 			{
-				pages[xx].capturePattern = new RegExp( pages[xx].capturePattern );
-			}
-		}
-	}
+				getSupportedSiteList.list = data.supportedSites;
 
-	return getSupportedSiteList.list;
+				for( var ii in getSupportedSiteList.list )
+				{
+					var site = getSupportedSiteList.list[ii];
+					site.domainRegex = new RegExp( "^(?:http|https):\/\/(?:www.)?" + site.domain + ".*$", "i" );
+
+					var pages = site.pages;
+					for( var xx in pages )
+					{
+						pages[xx].capturePattern = new RegExp( pages[xx].capturePattern );
+					}
+				}
+				
+				callback( getSupportedSiteList.list );
+			}
+		} );
+	}
+	else
+	{
+		callback( getSupportedSiteList.list );
+	}
 }
 getSupportedSiteList.list = null;
 
 function invalidateSiteList()
 {
 	getSupportedSiteList.list = null;
+	getSupportedSiteList( function( siteList ) {} );
 }
 
 function clone( obj )
