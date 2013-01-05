@@ -1,9 +1,12 @@
 ﻿function checkForValidUrl(tabId, changeInfo, tab)
 {
-	if( urlIsSupported( tab.url ) === true )
+	urlIsSupported( tab.url, function( isSupported )
 	{
-		chrome.pageAction.show(tabId);
-	}
+		if( isSupported === true )
+		{
+			chrome.pageAction.show(tabId);
+		}
+	});
 };
 
 // Listen for any changes to the URL of any tab.
@@ -58,7 +61,6 @@ function mergeSiteLists( siteList )
 
 // Perform first time setup
 chrome.runtime.onInstalled.addListener( firstRun );
-
 
 // Listen for list invalidation from Options page
 chrome.extension.onMessage.addListener(

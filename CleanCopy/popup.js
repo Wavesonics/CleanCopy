@@ -8,9 +8,8 @@
 		var tab = tabs[0];
 		var url = tab.url;
 
-		getSupportedSiteList( function( siteList )
+		getSupportedSite( url, function( site )
 		{
-			var site = getSupportedSite( url, siteList );
 			if( site != null )
 			{
 				for( var i in site.pages )

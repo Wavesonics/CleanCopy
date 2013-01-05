@@ -1,50 +1,49 @@
-﻿function urlIsSupported( url )
+﻿function urlIsSupported( url, callback )
 {
-	var isValid = false;
-
-	var site = getSupportedSite( url );
-	if( site !== null )
+	getSupportedSite( url, function( site )
 	{
-		for( var i in site.pages )
+		var isValid = false;
+		
+		if( site !== null )
 		{
-			var page = site.pages[i];
-			var parts = getUrlParts( url, page );
-
-			if( parts !== null && parts.length == page.captureGroups + 1 )
+			for( var i in site.pages )
 			{
-				isValid = true;
-				break;
+				var page = site.pages[i];
+				var parts = getUrlParts( url, page );
+				
+				if( parts !== null && parts.length == page.captureGroups + 1 )
+				{
+					isValid = true;
+					break;
+				}
 			}
 		}
-	}
-	
-	return isValid;
+		
+		callback( isValid );
+	});
 }
 
-function getSupportedSite( url, siteList )
+function getSupportedSite( url, callback )
 {
-	if( siteList === undefined )
+	getSupportedSiteList( function( siteList )
 	{
-		siteList = getSupportedSiteList.list;
-	}
-
-	var site = null;
-	if( siteList != null )
-	{
-		
-		for( var i in siteList )
+		var site = null;
+		if( siteList != null )
 		{
-			var tempSite = siteList[i];
-
-			if( checkDomain( tempSite, url ) )
+			for( var i in siteList )
 			{
-				site = tempSite;
-				break;
+				var tempSite = siteList[i];
+
+				if( checkDomain( tempSite, url ) )
+				{
+					site = tempSite;
+					break;
+				}
 			}
 		}
-	}
-	
-	return site;
+		
+		callback( site );
+	});
 }
 
 function checkDomain( site, url )
@@ -141,7 +140,10 @@ function getSupportedSiteList( callback )
 					}
 				}
 				
-				callback( getSupportedSiteList.list );
+				if( callback !== undefined )
+				{
+					callback( getSupportedSiteList.list );
+				}
 			}
 		} );
 	}
@@ -155,7 +157,7 @@ getSupportedSiteList.list = null;
 function invalidateSiteList()
 {
 	getSupportedSiteList.list = null;
-	getSupportedSiteList( function( siteList ) {} );
+	getSupportedSiteList();
 }
 
 function clone( obj )
