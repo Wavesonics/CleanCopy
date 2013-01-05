@@ -149,7 +149,10 @@ function getSupportedSiteList( callback )
 	}
 	else
 	{
-		callback( getSupportedSiteList.list );
+		if( callback !== undefined )
+		{
+			callback( getSupportedSiteList.list );
+		}
 	}
 }
 getSupportedSiteList.list = null;
